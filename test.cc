@@ -12,7 +12,7 @@ const float coefficients[] =
    0.018228517368043,   0.018228517368043,                   0,   1.000000000000000,  -0.963542965263913,                   0
 };
 
-#define NUM_SAMPLES 1000
+#define NUM_SAMPLES 48000
 
 int main()
 {
@@ -27,9 +27,14 @@ int main()
     if (index < NUM_SAMPLES/2) input[index] = 0; else input[index] = 1;
   } 
 
+  volatile float out;
   for (int index = 0; index < NUM_SAMPLES; ++index) 
   {
-    std::cout << cb::process<4, float, float, float>(coefficients, state, input[index]) << "\n";
+    for (int index2 = 0; index2 < 100; ++index2) 
+    {
+      out = cb::process<4, float, float, float>(coefficients, state, input[index]);
+    }
+    // std::cout << cb::process<4, float, float, float>(coefficients, state, input[index]) << "\n";
   }
 
   delete[] state;
