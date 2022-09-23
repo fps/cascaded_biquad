@@ -2,6 +2,9 @@
 
 namespace cascaded_biquad 
 {
+  // These coefficients are expected to be normalized, i.e. the fifth column
+  // has to be ones. If that is not the case you need to to normalize them
+  // beforehand!
   template<int stages, typename coefficient_t, typename state_t, typename sample_t> 
   sample_t process(const coefficient_t *coefficients, state_t* state, sample_t in) 
   {
@@ -17,9 +20,9 @@ namespace cascaded_biquad
     return intermediate;
   }
 
-  template<int stages, typename state_t> state_t* state() 
+  template<int stages, typename state_t> 
+  state_t* state() 
   {
     return new state_t[2*stages];
   }
-
 }
