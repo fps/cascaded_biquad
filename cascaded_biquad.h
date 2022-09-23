@@ -3,7 +3,7 @@
 namespace cascaded_biquad 
 {
   template<int stages, typename coefficient_t, typename state_t, typename sample_t> 
-  sample_t process(coefficient_t *coefficients, state_t* state, sample_t in) 
+  sample_t process(const coefficient_t *coefficients, state_t* state, sample_t in) 
   {
     sample_t intermediate = in;
     for (int stage = 0; stage < stages; ++stage) 

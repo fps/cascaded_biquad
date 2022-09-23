@@ -4,7 +4,7 @@
 // These coefficients were generated with MATLAB:
 // f = designfilt('lowpassiir', 'PassbandFrequency', 0.01, 'StopbandFrequency', 0.02, 'StopbandAttenuation', 32);
 // f.Coefficients
-float coefficients[] = 
+const float coefficients[] = 
 {
    0.000341790148053,   0.000683580296107,   0.000341790148053,   1.000000000000000,  -1.982247725220660,   0.983614885812873,
    0.000336817881561,   0.000673635763122,   0.000336817881561,   1.000000000000000,  -1.953410545448979,   0.954757816975223,
