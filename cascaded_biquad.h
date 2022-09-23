@@ -8,8 +8,8 @@ namespace cascaded_biquad
     sample_t intermediate = in;
     for (int stage = 0; stage < stages; ++stage) 
     {
-      sample_t stage_in = intermediate;
-      sample_t stage_out = stage_in * coefficients[6*stage+0] + state[2*stage+0];
+      const sample_t stage_in = intermediate;
+      const sample_t stage_out = stage_in * coefficients[6*stage+0] + state[2*stage+0];
       state[2*stage+0] = state[2*stage+1] + coefficients[6*stage+1] * stage_in - coefficients[6*stage+4] * stage_out;
       state[2*stage+1] = coefficients[6*stage+2] * stage_in - coefficients[6*stage+5] * stage_out;
       intermediate = stage_out;
