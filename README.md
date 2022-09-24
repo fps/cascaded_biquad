@@ -1,5 +1,5 @@
 
-Uses coefficients in normalized form, i.e. a1, a2, b0, b1, b2 as described in (https://en.wikipedia.org/wiki/Digital_biquad_filter#Transposed_direct_forms)[https://en.wikipedia.org/wiki/Digital_biquad_filter#Transposed_direct_forms] (transposed direct form 2.)
+Uses coefficients in normalized form, i.e. a1, a2, b0, b1, b2 as described in [https://en.wikipedia.org/wiki/Digital_biquad_filter#Transposed_direct_forms](https://en.wikipedia.org/wiki/Digital_biquad_filter#Transposed_direct_forms) (transposed direct form 2.)
 
 These are not suitable for coefficient interpolation, so for a synth with sweepable filters you would use something else, e.g. a state-variable-filter.
 
