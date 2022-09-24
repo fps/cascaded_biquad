@@ -12,9 +12,9 @@ namespace cascaded_biquad
     for (int stage = 0; stage < stages; ++stage) 
     {
       const sample_t stage_in = intermediate;
-      const sample_t stage_out = stage_in * coefficients[6*stage+0] + state[2*stage+0];
-      state[2*stage+0] = state[2*stage+1] + coefficients[6*stage+1] * stage_in - coefficients[6*stage+4] * stage_out;
-      state[2*stage+1] = coefficients[6*stage+2] * stage_in - coefficients[6*stage+5] * stage_out;
+      const sample_t stage_out = stage_in * coefficients[5*stage+0] + state[2*stage+0];
+      state[2*stage+0] = state[2*stage+1] + coefficients[5*stage+1] * stage_in - coefficients[5*stage+3] * stage_out;
+      state[2*stage+1] = coefficients[5*stage+2] * stage_in - coefficients[5*stage+4] * stage_out;
       intermediate = stage_out;
     }
     return intermediate;
