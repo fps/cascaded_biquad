@@ -1,12 +1,16 @@
 #pragma once
 
+#include <cstring>
+
 namespace cascaded_biquad 
 {
-  // These coefficients are expected to be normalized, i.e. the fifth column
+  // The coefficients are expected to be normalized, i.e. the fifth column
   // has to be ones. If that is not the case you need to to normalize them
   // beforehand!
+  // Additionally they are stored as a 1-D array in row-major order. I.e. 
+  // the first 5 elements are the entries in the first row.
   template<int stages, typename coefficient_t, typename state_t, typename sample_t> 
-  sample_t process(const coefficient_t *coefficients, state_t* state, sample_t in) 
+  sample_t process(const coefficient_t *coefficients, state_t* state, const sample_t in) 
   {
     sample_t intermediate = in;
     for (int stage = 0; stage < stages; ++stage) 
@@ -20,9 +24,13 @@ namespace cascaded_biquad
     return intermediate;
   }
 
-  template<int stages, typename state_t> 
+  // Produce an array suitable as filter state for a filter consisting of 
+  // number_of_stages stages.  Delete the array with delete[] instead of delete.
+  template<int number_of_stages, typename state_t> 
   state_t* state() 
   {
-    return new state_t[2*stages];
+    state_t *state = new state_t[2*number_of_stages];
+    memset(state, 0, sizeof(state_t)*2*number_of_stages);
+    return state;
   }
 }
