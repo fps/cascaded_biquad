@@ -10,7 +10,7 @@ namespace cascaded_biquad
   // Additionally they are stored as a 1-D array in row-major order. I.e. 
   // the first 5 elements are the entries in the first row.
   template<int stages, typename coefficient_t, typename state_t, typename sample_t> 
-  sample_t process(const coefficient_t *coefficients, state_t* state, const sample_t in) 
+  sample_t process(const coefficient_t *coefficients, state_t* state, coefficient_t gain, const sample_t in) 
   {
     sample_t intermediate = in;
     for (int stage = 0; stage < stages; ++stage) 
@@ -21,7 +21,7 @@ namespace cascaded_biquad
       state[2*stage+1] = coefficients[5*stage+2] * stage_in - coefficients[5*stage+4] * stage_out;
       intermediate = stage_out;
     }
-    return intermediate;
+    return gain * intermediate;
   }
 
   // Produce an array suitable as filter state for a filter consisting of 
