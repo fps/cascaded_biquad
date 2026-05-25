@@ -9,6 +9,9 @@ int main()
 {
   namespace cb = cascaded_biquad;
 
+  // Produced by julia code:
+  // f = DSP.digitalfilter(DSP.Lowpass(0.25), DSP.Chebyshev2(8, 60))
+  // DSP.SecondOrderSections(f)
   cb::direct_form1<4, float, float, float> filter = 
   {
     { { 
@@ -34,4 +37,4 @@ int main()
   std::cout << max_difference << "\n";
 
   return 0;
- }
+}
