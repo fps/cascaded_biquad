@@ -1,6 +1,8 @@
 #include <cascaded_biquad.h>
 #include <iostream>
 
+#include <noise.h>
+
 int main()
 {
   namespace cb = cascaded_biquad;
@@ -16,7 +18,10 @@ int main()
     0.002678078649978631 
   };
 
-  std::cout << filter.coefficients[0].b1 << " " << filter.previous_outputs[1][1] << "\n";
+  for (int index = 0; index < noise.size(); ++index)
+  {
+    std::cout << filter.process(noise[index]) << "\n";
+  }
 
   return 0;
  }
