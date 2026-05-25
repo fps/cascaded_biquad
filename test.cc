@@ -1,7 +1,9 @@
 #include <cascaded_biquad.h>
 #include <iostream>
+#include <cmath>
 
 #include <noise.h>
+#include <noise_output.h>
 
 int main()
 {
@@ -18,10 +20,18 @@ int main()
     0.002678078649978631 
   };
 
+  float max_difference = 0;
+
   for (int index = 0; index < noise.size(); ++index)
   {
-    std::cout << filter.process(noise[index]) << "\n";
+    float d = fabs(filter.process(noise[index]) - noise_output[index]);
+    if (d > max_difference)
+    {
+      max_difference = d;
+    }
   }
+
+  std::cout << max_difference << "\n";
 
   return 0;
  }
