@@ -1,5 +1,5 @@
-CXXFLAGS ?= -I. -std=c++17
+CXXFLAGS ?= -I include/ -std=c++17 -O2
 all: test
 
-test: test.cc cascaded_biquad.h noise.h
+test: test.cc include/cascaded_biquad.h noise.h
 

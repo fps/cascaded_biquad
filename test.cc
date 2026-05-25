@@ -2,8 +2,8 @@
 #include <iostream>
 #include <cmath>
 
-#include <noise.h>
-#include <noise_output.h>
+#include "noise.h"
+#include "noise_output.h"
 
 int main()
 {
@@ -12,7 +12,7 @@ int main()
   // Produced by julia code:
   // f = DSP.digitalfilter(DSP.Lowpass(0.25), DSP.Chebyshev2(8, 60))
   // DSP.SecondOrderSections(f)
-  cb::direct_form1<4, float, float, float> filter = 
+  cb::direct_form1<4> filter = 
   {
     { { 
     {1.0, 1.2737743779835942, 1.0, -0.9304164090155603, 0.22721104055145627}, 
