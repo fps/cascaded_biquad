@@ -56,10 +56,38 @@ namespace cascaded_biquad
 
         pi[1] = pi[0];
         po[1] = po[0];
+
         pi[0] = intermediate;
         po[0] = out; 
 
         intermediate = out;    
+      }
+
+      return gain * intermediate;
+    }
+  };
+
+  template<int stages, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
+  struct transposed_form2
+  {
+    const std::array<normalized_coefficients<coefficient_t>, stages> coefficients;
+    const coefficient_t gain;
+
+    std::array<std::array<state_t, 2>, stages> states;
+
+    inline sample_t process(float const input)
+    {
+      sample_t intermediate = input;
+      for (int stage = 0; stage < stages; ++stage)
+      {
+        auto const & c = coefficients[stage];
+        auto & state = states[stage];
+
+        const state_t s = input - c.a1 * state[0] - c.a2 * state[1];
+        intermediate = c.b0 * s + c.b1 * state[0] + c.b2 * state[1];
+
+        state[1] = state[0];
+        state[0] = s;
       }
 
       return gain * intermediate;
