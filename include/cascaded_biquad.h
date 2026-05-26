@@ -37,8 +37,9 @@ namespace cascaded_biquad
   template<int stages, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
   struct direct_form1
   {
-    std::array<normalized_coefficients<coefficient_t>, stages> coefficients;
-    coefficient_t gain;
+    const std::array<normalized_coefficients<coefficient_t>, stages> coefficients;
+    const coefficient_t gain;
+
     std::array<std::array<state_t, 2>, stages> previous_inputs;
     std::array<std::array<state_t, 2>, stages> previous_outputs;
 
