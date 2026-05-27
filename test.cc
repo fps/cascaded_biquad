@@ -1,9 +1,14 @@
 #include <cascaded_biquad.h>
 #include <iostream>
 #include <cmath>
+#include <vector>
 
-#include "noise.h"
-#include "noise_output.h"
+const int T = 10;
+const int RATE = 48000;
+const int L = RATE*T;
+
+// #include "noise.h"
+// #include "noise_output.h"
 
 int main()
 {
@@ -34,22 +39,24 @@ int main()
     0.002678078649978631 
   };
 
-  std::cout << filter1 << "\n" << filter2 << "\n";
+  // std::cout << filter1 << "\n" << filter2 << "\n";
 
-  float max_difference = 0;
+  std::vector<float> input(L, 0);
+  std::vector<float> oversampled(L*2, 0);
+  std::vector<float> output(L, 0);
 
-  for (int index = 0; index < /* noise.size() */ 1000; ++index)
+  for (int n = 0; n < L; ++n)
   {
-    std::cout << filter1.process(noise[index]) << " " << filter2.process(noise[index]) << "\n";
-    float d = fabs(filter1.process(noise[index]) - noise_output[index]);
-    // std::cout << d << "\n";
-    if (d > max_difference)
-    {
-      max_difference = d;
-    }
+    input[n] = sin(2 * M_PI * (0.25 * (float)n/(float)L) * n);
   }
 
-  std::cout << max_difference << "\n";
+    
+  float max_difference = 0;
+
+  for (int index = 0; index < input.size(); ++index)
+  {
+    std::cout << filter1.process(input[index]) << " " << filter2.process(input[index]) << "\n";
+  }
 
   return 0;
 }

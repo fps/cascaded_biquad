@@ -133,5 +133,44 @@ namespace cascaded_biquad
     o << f.gain << " }";
     return o;
   }
+
+  template<int sections, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
+  struct transposed_direct_form2
+  {
+    const std::array<normalized_coefficients<coefficient_t>, sections> coefficients;
+    const coefficient_t gain;
+
+    std::array<std::array<state_t, 2>, sections> states;
+
+    inline sample_t process(sample_t const input)
+    {
+      sample_t intermediate = input;
+      for (int section = 0; section < sections; ++section)
+      {
+        auto const & c = coefficients[section];
+        auto & state = states[section];
+
+        float const out = state[0] + intermediate * c.b0;
+        state[0] = state[1] + c.b1 * intermediate - c.a1 * out;
+        state[1] = c.b2 * intermediate - c.a2 * out;
+
+        intermediate = out;
+      }
+
+      return gain * intermediate;
+    }
+  };
+
+  template<int sections, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
+  std::ostream & operator<<(std::ostream & o, transposed_direct_form2<sections, coefficient_t, state_t, sample_t> const & f)
+  {
+    o << "{ ";
+    for (int section = 0; section < sections; ++section)
+    {
+      o << f.coefficients[section] << ", ";
+    }
+    o << f.gain << " }";
+    return o;
+  }
 }
 
