@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <array>
+#include <ostream>
 
 namespace cascaded_biquad 
 {
@@ -18,6 +19,13 @@ namespace cascaded_biquad
   };
 
   template<typename coefficient_t>
+  std::ostream & operator<<(std::ostream & o, coefficients<coefficient_t> const & c)
+  {
+    o << "{ " << c.b0 << ", " << c.b1 << ", " << c.b2 << ", " << c.a0 << ", " << c.a1 << ", " << c.a2 << " }";
+    return o;
+  }
+
+  template<typename coefficient_t>
   struct normalized_coefficients
   {
     coefficient_t b0;
@@ -29,28 +37,36 @@ namespace cascaded_biquad
   };
 
   template<typename coefficient_t>
+  std::ostream & operator<<(std::ostream & o, normalized_coefficients<coefficient_t> const & c)
+  {
+    o << "{ " << c.b0 << " " << c.b1 << " " << c.b2 << " " << c.a1 << " " << c.a2 << " }";
+    return o;
+  }
+
+  template<typename coefficient_t>
   normalized_coefficients<coefficient_t> normalize_coefficients(coefficients<coefficient_t> const & c)
   {
-    return { c.a1 / c.a0, c.a2 / c.a0, c.b0 / c.a0, c.b1 / c.a0, c.b2 / c.a0 };
+    return { c.b0 / c.a0, c.b1 / c.a0, c.b2 / c.a0, c.a1 / c.a0, c.a2 / c.a0 };
   };
   
-  template<int stages, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
+  template<int sections, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
   struct direct_form1
   {
-    const std::array<normalized_coefficients<coefficient_t>, stages> coefficients;
+    const std::array<normalized_coefficients<coefficient_t>, sections> coefficients;
     const coefficient_t gain;
 
-    std::array<std::array<state_t, 2>, stages> previous_inputs;
-    std::array<std::array<state_t, 2>, stages> previous_outputs;
+    std::array<std::array<state_t, 2>, sections> previous_inputs;
+    std::array<std::array<state_t, 2>, sections> previous_outputs;
 
-    inline sample_t process(float const input)
+    inline sample_t process(sample_t const input)
     {
       sample_t intermediate = input;
-      for (int stage = 0; stage < stages; ++stage)
+      for (int section = 0; section < sections; ++section)
       {
-        auto const & c = coefficients[stage];
-        auto & pi = previous_inputs[stage];
-        auto & po = previous_outputs[stage];
+        auto const & c = coefficients[section];
+
+        auto & pi = previous_inputs[section];
+        auto & po = previous_outputs[section];
 
         const sample_t out = c.b0 * intermediate + c.b1 * pi[0] + c.b2 * pi[1] - c.a1 * po[0] - c.a2 * po[1];
 
@@ -67,23 +83,35 @@ namespace cascaded_biquad
     }
   };
 
-  template<int stages, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
-  struct transposed_form2
+  template<int sections, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
+  std::ostream & operator<<(std::ostream & o, direct_form1<sections, coefficient_t, state_t, sample_t> const & f)
   {
-    const std::array<normalized_coefficients<coefficient_t>, stages> coefficients;
+    o << "{ ";
+    for (int section = 0; section < sections; ++section)
+    {
+      o << f.coefficients[section] << ", ";
+    }
+    o << f.gain << " }";
+    return o;
+  }
+
+  template<int sections, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
+  struct direct_form2
+  {
+    const std::array<normalized_coefficients<coefficient_t>, sections> coefficients;
     const coefficient_t gain;
 
-    std::array<std::array<state_t, 2>, stages> states;
+    std::array<std::array<state_t, 2>, sections> states;
 
-    inline sample_t process(float const input)
+    inline sample_t process(sample_t const input)
     {
       sample_t intermediate = input;
-      for (int stage = 0; stage < stages; ++stage)
+      for (int section = 0; section < sections; ++section)
       {
-        auto const & c = coefficients[stage];
-        auto & state = states[stage];
+        auto const & c = coefficients[section];
+        auto & state = states[section];
 
-        const state_t s = input - c.a1 * state[0] - c.a2 * state[1];
+        const state_t s = intermediate - c.a1 * state[0] - c.a2 * state[1];
         intermediate = c.b0 * s + c.b1 * state[0] + c.b2 * state[1];
 
         state[1] = state[0];
@@ -94,4 +122,16 @@ namespace cascaded_biquad
     }
   };
 
+  template<int sections, typename coefficient_t = float, typename state_t = coefficient_t, typename sample_t = coefficient_t>
+  std::ostream & operator<<(std::ostream & o, direct_form2<sections, coefficient_t, state_t, sample_t> const & f)
+  {
+    o << "{ ";
+    for (int section = 0; section < sections; ++section)
+    {
+      o << f.coefficients[section] << ", ";
+    }
+    o << f.gain << " }";
+    return o;
+  }
 }
+
