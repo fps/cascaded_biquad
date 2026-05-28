@@ -7,9 +7,6 @@ const int T = 10;
 const int RATE = 48000;
 const int L = RATE*T;
 
-// #include "noise.h"
-// #include "noise_output.h"
-
 int main()
 {
   namespace cb = cascaded_biquad;
@@ -49,7 +46,6 @@ int main()
   {
     input[n] = sin(2 * M_PI * (0.25 * (float)n/(float)L) * n);
   }
-
     
   float max_difference = 0;
 
